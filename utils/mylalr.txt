@@ -1,0 +1,519 @@
+﻿============================================================
+GOLD Parser Builder
+Version 5.2.0.
+============================================================
+
+
+========================================
+Terminals
+========================================
+
+ 0      (EOF)
+ 1      (Error)
+ 2      Whitespace
+ 3      '-'
+ 4      '('
+ 5      ')'
+ 6      '*'
+ 7      '/'
+ 8      ';'
+ 9      '+'
+ 10     '='
+ 11     id
+ 12     int
+ 13     number
+
+
+========================================
+Nonterminals
+========================================
+
+14      <EXPR>
+15      <FACT>
+16      <STMT>
+17      <TERM>
+18      <TYPE>
+
+
+========================================
+Rules
+========================================
+
+0       <STMT> ::= <TYPE> id '=' <EXPR> ';' <STMT>
+1       <STMT> ::= 
+2       <TYPE> ::= int
+3       <EXPR> ::= <EXPR> '+' <TERM>
+4       <EXPR> ::= <EXPR> '-' <TERM>
+5       <EXPR> ::= <TERM>
+6       <TERM> ::= <TERM> '*' <FACT>
+7       <TERM> ::= <TERM> '/' <FACT>
+8       <TERM> ::= <FACT>
+9       <FACT> ::= '(' <EXPR> ')'
+10      <FACT> ::= id
+11      <FACT> ::= number
+
+
+========================================
+DFA States
+========================================
+
+State 0
+        Goto 1       &09 .. &0D, &20, &85, &A0, &1680, &180E, &2000 .. &200A, &2026, &2028, &2029, &202F, &205F, &3000
+        Goto 2       -
+        Goto 3       (
+        Goto 4       )
+        Goto 5       *
+        Goto 6       /
+        Goto 7       ;
+        Goto 8       +
+        Goto 9       =
+        Goto 10      ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghjklmnopqrstuvwxyz
+        Goto 15      _
+        Goto 16      0123456789
+        Goto 17      Ii
+
+
+State 1
+        Goto 1       &09 .. &0D, &20, &85, &A0, &1680, &180E, &2000 .. &200A, &2026, &2028, &2029, &202F, &205F, &3000
+        Accept Whitespace
+
+
+State 2
+        Accept '-'
+
+
+State 3
+        Accept '('
+
+
+State 4
+        Accept ')'
+
+
+State 5
+        Accept '*'
+
+
+State 6
+        Accept '/'
+
+
+State 7
+        Accept ';'
+
+
+State 8
+        Accept '+'
+
+
+State 9
+        Accept '='
+
+
+State 10
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 14      _
+        Accept id
+
+
+State 11
+        Goto 11      0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 12      _
+        Accept id
+
+
+State 12
+        Goto 11      0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 12      _
+        Accept id
+
+
+State 13
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 14      _
+        Accept id
+
+
+State 14
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 14      _
+        Accept id
+
+
+State 15
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 14      _
+        Accept id
+
+
+State 16
+        Goto 16      0123456789
+        Accept number
+
+
+State 17
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz
+        Goto 18      Nn
+        Goto 14      _
+        Accept id
+
+
+State 18
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMNOPQRSUVWXYZabcdefghijklmnopqrsuvwxyz
+        Goto 19      Tt
+        Goto 14      _
+        Accept id
+
+
+State 19
+        Goto 11      0123456789
+        Goto 13      ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        Goto 14      _
+        Accept int
+
+
+
+
+========================================
+LALR States
+========================================
+
+State 0
+        <S'> ::= _ <STMT> (EOF)                             <S'> ::= ^ <STMT> (EOF)
+        <STMT> ::= _ <TYPE> id '=' <EXPR> ';' <STMT>        <STMT> ::= ^ <TYPE> id '=' <EXPR> ';' <STMT>
+        <STMT> ::= _                                        <STMT> ::= ^
+        <TYPE> ::= _ int                                    <TYPE> ::= ^ int
+
+        int s 1
+        <STMT> g 2
+        <TYPE> g 3
+        (EOF) r 1
+
+
+State 1
+        Prior States: 0, 14
+
+        <TYPE> ::= int _                                    <TYPE> ::= int ^
+
+        id r 2
+
+
+State 2
+        Prior States: 0
+
+        <S'> ::= <STMT> _ (EOF)                             <S'> ::= <STMT> ^ (EOF)
+
+        (EOF) a
+
+
+State 3
+        Prior States: 0, 14
+
+        <STMT> ::= <TYPE> _ id '=' <EXPR> ';' <STMT>        <STMT> ::= <TYPE> ^ id '=' <EXPR> ';' <STMT>
+
+        id s 4
+
+
+State 4
+        Prior States: 3
+
+        <STMT> ::= <TYPE> id _ '=' <EXPR> ';' <STMT>        <STMT> ::= <TYPE> id ^ '=' <EXPR> ';' <STMT>
+
+        '=' s 5
+
+
+State 5
+        Prior States: 4
+
+        <STMT> ::= <TYPE> id '=' _ <EXPR> ';' <STMT>        <STMT> ::= <TYPE> id '=' ^ <EXPR> ';' <STMT>
+        <EXPR> ::= _ <EXPR> '+' <TERM>                      <EXPR> ::= ^ <EXPR> '+' <TERM>
+        <EXPR> ::= _ <EXPR> '-' <TERM>                      <EXPR> ::= ^ <EXPR> '-' <TERM>
+        <EXPR> ::= _ <TERM>                                 <EXPR> ::= ^ <TERM>
+        <TERM> ::= _ <TERM> '*' <FACT>                      <TERM> ::= ^ <TERM> '*' <FACT>
+        <TERM> ::= _ <TERM> '/' <FACT>                      <TERM> ::= ^ <TERM> '/' <FACT>
+        <TERM> ::= _ <FACT>                                 <TERM> ::= ^ <FACT>
+        <FACT> ::= _ '(' <EXPR> ')'                         <FACT> ::= ^ '(' <EXPR> ')'
+        <FACT> ::= _ id                                     <FACT> ::= ^ id
+        <FACT> ::= _ number                                 <FACT> ::= ^ number
+
+        '(' s 6
+        id s 7
+        number s 8
+        <EXPR> g 9
+        <FACT> g 10
+        <TERM> g 11
+
+
+State 6
+        Prior States: 5, 6, 13, 15, 16, 17
+
+        <FACT> ::= '(' _ <EXPR> ')'                         <FACT> ::= '(' ^ <EXPR> ')'
+        <EXPR> ::= _ <EXPR> '+' <TERM>                      <EXPR> ::= ^ <EXPR> '+' <TERM>
+        <EXPR> ::= _ <EXPR> '-' <TERM>                      <EXPR> ::= ^ <EXPR> '-' <TERM>
+        <EXPR> ::= _ <TERM>                                 <EXPR> ::= ^ <TERM>
+        <TERM> ::= _ <TERM> '*' <FACT>                      <TERM> ::= ^ <TERM> '*' <FACT>
+        <TERM> ::= _ <TERM> '/' <FACT>                      <TERM> ::= ^ <TERM> '/' <FACT>
+        <TERM> ::= _ <FACT>                                 <TERM> ::= ^ <FACT>
+        <FACT> ::= _ '(' <EXPR> ')'                         <FACT> ::= ^ '(' <EXPR> ')'
+        <FACT> ::= _ id                                     <FACT> ::= ^ id
+        <FACT> ::= _ number                                 <FACT> ::= ^ number
+
+        '(' s 6
+        id s 7
+        number s 8
+        <EXPR> g 12
+        <FACT> g 10
+        <TERM> g 11
+
+
+State 7
+        Prior States: 5, 6, 13, 15, 16, 17
+
+        <FACT> ::= id _                                     <FACT> ::= id ^
+
+        '-' r 10
+        ')' r 10
+        '*' r 10
+        '/' r 10
+        ';' r 10
+        '+' r 10
+
+
+State 8
+        Prior States: 5, 6, 13, 15, 16, 17
+
+        <FACT> ::= number _                                 <FACT> ::= number ^
+
+        '-' r 11
+        ')' r 11
+        '*' r 11
+        '/' r 11
+        ';' r 11
+        '+' r 11
+
+
+State 9
+        Prior States: 5
+
+        <STMT> ::= <TYPE> id '=' <EXPR> _ ';' <STMT>        <STMT> ::= <TYPE> id '=' <EXPR> ^ ';' <STMT>
+        <EXPR> ::= <EXPR> _ '+' <TERM>                      <EXPR> ::= <EXPR> ^ '+' <TERM>
+        <EXPR> ::= <EXPR> _ '-' <TERM>                      <EXPR> ::= <EXPR> ^ '-' <TERM>
+
+        '-' s 13
+        ';' s 14
+        '+' s 15
+
+
+State 10
+        Prior States: 5, 6, 13, 15
+
+        <TERM> ::= <FACT> _                                 <TERM> ::= <FACT> ^
+
+        '-' r 8
+        ')' r 8
+        '*' r 8
+        '/' r 8
+        ';' r 8
+        '+' r 8
+
+
+State 11
+        Prior States: 5, 6
+
+        <EXPR> ::= <TERM> _                                 <EXPR> ::= <TERM> ^
+        <TERM> ::= <TERM> _ '*' <FACT>                      <TERM> ::= <TERM> ^ '*' <FACT>
+        <TERM> ::= <TERM> _ '/' <FACT>                      <TERM> ::= <TERM> ^ '/' <FACT>
+
+        '*' s 16
+        '/' s 17
+        '-' r 5
+        ')' r 5
+        ';' r 5
+        '+' r 5
+
+
+State 12
+        Prior States: 6
+
+        <FACT> ::= '(' <EXPR> _ ')'                         <FACT> ::= '(' <EXPR> ^ ')'
+        <EXPR> ::= <EXPR> _ '+' <TERM>                      <EXPR> ::= <EXPR> ^ '+' <TERM>
+        <EXPR> ::= <EXPR> _ '-' <TERM>                      <EXPR> ::= <EXPR> ^ '-' <TERM>
+
+        '-' s 13
+        ')' s 18
+        '+' s 15
+
+
+State 13
+        Prior States: 9, 12
+
+        <EXPR> ::= <EXPR> '-' _ <TERM>                      <EXPR> ::= <EXPR> '-' ^ <TERM>
+        <TERM> ::= _ <TERM> '*' <FACT>                      <TERM> ::= ^ <TERM> '*' <FACT>
+        <TERM> ::= _ <TERM> '/' <FACT>                      <TERM> ::= ^ <TERM> '/' <FACT>
+        <TERM> ::= _ <FACT>                                 <TERM> ::= ^ <FACT>
+        <FACT> ::= _ '(' <EXPR> ')'                         <FACT> ::= ^ '(' <EXPR> ')'
+        <FACT> ::= _ id                                     <FACT> ::= ^ id
+        <FACT> ::= _ number                                 <FACT> ::= ^ number
+
+        '(' s 6
+        id s 7
+        number s 8
+        <FACT> g 10
+        <TERM> g 19
+
+
+State 14
+        Prior States: 9
+
+        <STMT> ::= <TYPE> id '=' <EXPR> ';' _ <STMT>        <STMT> ::= <TYPE> id '=' <EXPR> ';' ^ <STMT>
+        <STMT> ::= _ <TYPE> id '=' <EXPR> ';' <STMT>        <STMT> ::= ^ <TYPE> id '=' <EXPR> ';' <STMT>
+        <STMT> ::= _                                        <STMT> ::= ^
+        <TYPE> ::= _ int                                    <TYPE> ::= ^ int
+
+        int s 1
+        <STMT> g 20
+        <TYPE> g 3
+        (EOF) r 1
+
+
+State 15
+        Prior States: 9, 12
+
+        <EXPR> ::= <EXPR> '+' _ <TERM>                      <EXPR> ::= <EXPR> '+' ^ <TERM>
+        <TERM> ::= _ <TERM> '*' <FACT>                      <TERM> ::= ^ <TERM> '*' <FACT>
+        <TERM> ::= _ <TERM> '/' <FACT>                      <TERM> ::= ^ <TERM> '/' <FACT>
+        <TERM> ::= _ <FACT>                                 <TERM> ::= ^ <FACT>
+        <FACT> ::= _ '(' <EXPR> ')'                         <FACT> ::= ^ '(' <EXPR> ')'
+        <FACT> ::= _ id                                     <FACT> ::= ^ id
+        <FACT> ::= _ number                                 <FACT> ::= ^ number
+
+        '(' s 6
+        id s 7
+        number s 8
+        <FACT> g 10
+        <TERM> g 21
+
+
+State 16
+        Prior States: 11, 19, 21
+
+        <TERM> ::= <TERM> '*' _ <FACT>                      <TERM> ::= <TERM> '*' ^ <FACT>
+        <FACT> ::= _ '(' <EXPR> ')'                         <FACT> ::= ^ '(' <EXPR> ')'
+        <FACT> ::= _ id                                     <FACT> ::= ^ id
+        <FACT> ::= _ number                                 <FACT> ::= ^ number
+
+        '(' s 6
+        id s 7
+        number s 8
+        <FACT> g 22
+
+
+State 17
+        Prior States: 11, 19, 21
+
+        <TERM> ::= <TERM> '/' _ <FACT>                      <TERM> ::= <TERM> '/' ^ <FACT>
+        <FACT> ::= _ '(' <EXPR> ')'                         <FACT> ::= ^ '(' <EXPR> ')'
+        <FACT> ::= _ id                                     <FACT> ::= ^ id
+        <FACT> ::= _ number                                 <FACT> ::= ^ number
+
+        '(' s 6
+        id s 7
+        number s 8
+        <FACT> g 23
+
+
+State 18
+        Prior States: 12
+
+        <FACT> ::= '(' <EXPR> ')' _                         <FACT> ::= '(' <EXPR> ')' ^
+
+        '-' r 9
+        ')' r 9
+        '*' r 9
+        '/' r 9
+        ';' r 9
+        '+' r 9
+
+
+State 19
+        Prior States: 13
+
+        <EXPR> ::= <EXPR> '-' <TERM> _                      <EXPR> ::= <EXPR> '-' <TERM> ^
+        <TERM> ::= <TERM> _ '*' <FACT>                      <TERM> ::= <TERM> ^ '*' <FACT>
+        <TERM> ::= <TERM> _ '/' <FACT>                      <TERM> ::= <TERM> ^ '/' <FACT>
+
+        '*' s 16
+        '/' s 17
+        '-' r 4
+        ')' r 4
+        ';' r 4
+        '+' r 4
+
+
+State 20
+        Prior States: 14
+
+        <STMT> ::= <TYPE> id '=' <EXPR> ';' <STMT> _        <STMT> ::= <TYPE> id '=' <EXPR> ';' <STMT> ^
+
+        (EOF) r 0
+
+
+State 21
+        Prior States: 15
+
+        <EXPR> ::= <EXPR> '+' <TERM> _                      <EXPR> ::= <EXPR> '+' <TERM> ^
+        <TERM> ::= <TERM> _ '*' <FACT>                      <TERM> ::= <TERM> ^ '*' <FACT>
+        <TERM> ::= <TERM> _ '/' <FACT>                      <TERM> ::= <TERM> ^ '/' <FACT>
+
+        '*' s 16
+        '/' s 17
+        '-' r 3
+        ')' r 3
+        ';' r 3
+        '+' r 3
+
+
+State 22
+        Prior States: 16
+
+        <TERM> ::= <TERM> '*' <FACT> _                      <TERM> ::= <TERM> '*' <FACT> ^
+
+        '-' r 6
+        ')' r 6
+        '*' r 6
+        '/' r 6
+        ';' r 6
+        '+' r 6
+
+
+State 23
+        Prior States: 17
+
+        <TERM> ::= <TERM> '/' <FACT> _                      <TERM> ::= <TERM> '/' <FACT> ^
+
+        '-' r 7
+        ')' r 7
+        '*' r 7
+        '/' r 7
+        ';' r 7
+        '+' r 7
+
+
+
+
+========================================
+System Log
+========================================
+
+Grammar        Success           The grammar was successfully analyzed
+LALR States    Success           LALR Table was succesfully created
+DFA States     Success           The DFA State Table was successfully created
+System         Success           The grammar was successfully analyzed and tables were created.
+
+
