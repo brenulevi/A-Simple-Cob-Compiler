@@ -5,6 +5,7 @@
 #include <pugixml.hpp>
 #include <iostream>
 #include <cassert>
+#include <list>
 
 #define assertm(exp, msg) assert(((void)msg, exp))
 
@@ -62,6 +63,8 @@ Parser::Parser()
 
 bool Parser::parse()
 {
+    bool syntax_error = false;
+
     lookahead = lexer.get_next_token();
     PA_stack.push("0");
 
@@ -125,9 +128,60 @@ bool Parser::parse()
         {
             break;
         }
+        else{
+            // Syntax error treatment
+            syntax_error = true;
+
+            std::stringstream error_message;
+
+            error_message << "SYNTAX ERROR: Line " << lexer.current_line << ", state " << PA_stack.top() << " - ";
+
+            // Identify error token
+            if (la_tag == Tag::END) {
+                error_message << "Unexpected EOF found.";
+            } else if (la_tag == Tag::ID) {
+                Id* id_token = reinterpret_cast<Id*>(lookahead);
+                error_message << "Identifier '" << id_token->lexem << "' not expected.";
+            } else if (la_tag == Tag::KEYWORD) {
+                Keyword* k_token = reinterpret_cast<Keyword*>(lookahead);
+                error_message << "Keyword '" << k_token->lexem << "' not expected.";
+            } else if (la_tag == Tag::NUMBER) {
+                error_message << "Number '" << reinterpret_cast<Number*>(lookahead) << "' not expected.";
+            } else { 
+                error_message << "Unexpected symbol '" << static_cast<char>(la_tag) << "' found.";
+            }
+            
+            // Expected tokens
+            error_message << " Are expected:";
+            
+            TableAction EOF_action = parse_table[{PA_stack.top(), "EOF"}]; 
+            if ((EOF_action.action)) error_message <<" EOF";
+
+            TableAction id_action = parse_table[{PA_stack.top(), "id"}]; 
+            if ((id_action.action)) error_message <<" id";
+
+            TableAction number_action = parse_table[{PA_stack.top(), "number"}]; 
+            if ((number_action.action)) error_message <<" number";
+
+            std::vector<std::string> keywords = {"int", "-", "(", ")", "*", "/", ";", "+", "="};
+            for (const auto& token : keywords)
+            {
+                TableAction keyword_action = parse_table[{PA_stack.top(), token}]; 
+                if((keyword_action.action)) error_message <<" keyword";
+            }
+
+            // Print error
+            std::cerr << error_message.str() << std::endl;
+
+            // Error treatment - discard token and continue LOL
+            if (la_tag == Tag::END){
+                break;
+            } else{
+                lookahead = lexer.get_next_token(); 
+            }
+            
+        }
     }
 
-
-    
-    return true;
+    return !syntax_error;
 }

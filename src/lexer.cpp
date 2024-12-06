@@ -4,7 +4,7 @@
 #include <iostream>
 
 Lexer::Lexer()
-    : peek{' '}
+    : peek{' '}, current_line{1}
 {
     // initialize keyword automata
     // int keyword
@@ -48,6 +48,11 @@ Token *Lexer::get_next_token()
     // ignore white spaces [" ", "\t", "\n"]
     while (std::isspace(peek))
     {
+        if (peek == '\n')
+        {
+            ++current_line;
+        }
+        
         peek = glob::file.get();
     }
 

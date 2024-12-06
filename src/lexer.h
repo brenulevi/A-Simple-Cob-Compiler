@@ -54,6 +54,7 @@ public:
     Token *get_next_token();
 
 public:
+    int current_line;
     struct
     {
         Token t;

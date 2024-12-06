@@ -19,7 +19,9 @@ int main(int argc, char** argv)
     }
 
     Parser parser;
-    parser.parse();
+    bool result = parser.parse();
+
+    printf("%d", result);
 
     return 0;
 }
