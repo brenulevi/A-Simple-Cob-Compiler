@@ -141,12 +141,12 @@ bool Parser::parse()
                 error_message << "Unexpected EOF found.";
             } else if (la_tag == Tag::ID) {
                 Id* id_token = reinterpret_cast<Id*>(lookahead);
-                error_message << "Identifier '" << id_token->lexem << "' not expected.";
+                error_message << "Unexpected identifier '" << id_token->lexem << "' found.";
             } else if (la_tag == Tag::KEYWORD) {
                 Keyword* k_token = reinterpret_cast<Keyword*>(lookahead);
-                error_message << "Keyword '" << k_token->lexem << "' not expected.";
+                error_message << "Unexpected keyword '" << k_token->lexem << "' found.";
             } else if (la_tag == Tag::NUMBER) {
-                error_message << "Number '" << reinterpret_cast<Number*>(lookahead) << "' not expected.";
+                error_message << "Unexpected number '" << reinterpret_cast<Number*>(lookahead)->lexem << "' found.";
             } else { 
                 error_message << "Unexpected symbol '" << static_cast<char>(la_tag) << "' found.";
             }
@@ -167,13 +167,13 @@ bool Parser::parse()
             for (const auto& token : keywords)
             {
                 TableAction keyword_action = parse_table[{PA_stack.top(), token}]; 
-                if((keyword_action.action)) error_message <<" keyword";
+                if((keyword_action.action)) error_message << " " << token;
             }
 
             // Print error
             std::cerr << error_message.str() << std::endl;
 
-            // Error treatment - discard token and continue LOL
+            // Error treatment - discard token and continue
             if (la_tag == Tag::END){
                 break;
             } else{

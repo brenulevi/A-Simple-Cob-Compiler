@@ -74,7 +74,7 @@ Token *Lexer::get_next_token()
             return &token.n;
         }
 
-        std::cout << "lexical error: invalid token " << buf << std::endl;
+        std::cout << "LEXICAL ERROR: Line " << current_line << " - unexpected token '" << buf << "'"<< std::endl;
     }
 
     if (isalpha(peek) || peek == '_')
@@ -102,7 +102,7 @@ Token *Lexer::get_next_token()
             return &token.i;
         }
 
-        std::cout << "lexical error: invalid token " << buf << std::endl;
+        std::cout << "LEXICAL ERROR: Line " << current_line << " - unexpected token '" << buf << "'"<< std::endl;
     }
 
     // operator
